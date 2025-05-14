@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Moving Pics</title>
+  <style>
+    #container {
+      position: relative;
+      width: 400px;
+      height: 400px;
+      border: 2px solid red;
+      margin: 20px auto;
+      overflow: hidden;
+      background-color: #fdfdfd;
+    }
+
+    .moving-img {
+      position: absolute;
+      width: 50px;
+    }
+
+    #img1 {
+      top: 150px;
+      left: 0;
+    }
+
+    #img2 {
+      top: 150px;
+      right: 0;
+    }
+
+    #img3 {
+      top: 0;
+      left: 170px;
+    }
+
+    .controls {
+      text-align: center;
+      margin-top: 10px;
+    }
+
+    button {
+      margin: 0 5px;
+      padding: 6px 12px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="container">
+    <img id="img1" class="moving-img" src="icon1.gif" alt="left-right 1">
+    <img id="img2" class="moving-img" src="icon2.gif" alt="left-right 2">
+    <img id="img3" class="moving-img" src="TOP.JPG" alt="up-down">
+  </div>
+
+  <div class="controls">
+    <button id="startBtn">Start</button>
+    <button id="stopBtn">Stop</button>
+    <button id="resetBtn">Reset</button>
+  </div>
+
+  <script>
+    var img1 = document.getElementById('img1');
+    var img2 = document.getElementById('img2');
+    var img3 = document.getElementById('img3');
+    var container = document.getElementById('container');
+
+    var containerWidth = container.clientWidth;
+    var containerHeight = container.clientHeight;
+
+    var pos1 = 0;
+    var pos2 = containerWidth - img2.offsetWidth;
+    var pos3 = 0;
+
+    var interval1 = null, interval2 = null, interval3 = null;
+    var isMoving = false;
+
+    function moveImages() {
+      // from lift to right 
+      interval1 = setInterval(() => {
+        pos1 += 5;
+        if (pos1 >= containerWidth - img1.offsetWidth || pos1 <= 0) {
+          pos1 = 0;
+        }
+        img1.style.left = pos1 + 'px';
+      }, 50);
+
+      // from right to left 
+      interval2 = setInterval(() => {
+        pos2 -= 5;
+        if (pos2 <= 0 || pos2 >= containerWidth - img2.offsetWidth) {
+          pos2 = containerWidth - img2.offsetWidth;
+        }
+        img2.style.left = pos2 + 'px';
+      }, 50);
+
+      // top to down
+      interval3 = setInterval(() => {
+        pos3 += 5;
+        if (pos3 >= containerHeight - img3.offsetHeight || pos3 <= 0) {
+          pos3 = 0;
+        }
+        img3.style.top = pos3 + 'px';
+      }, 50);
+    }
+
+    function startMoving() {
+      if (!isMoving) {
+        moveImages();
+        isMoving = true;
+      }
+    }
+
+    function stopMoving() {
+      clearInterval(interval1);
+      clearInterval(interval2);
+      clearInterval(interval3);
+      interval1 = interval2 = interval3 = null;
+      isMoving = false;
+    }
+
+    function resetPositions() {
+      // current
+      var wasMoving = isMoving;
+
+      // Stop temprarly 
+      stopMoving();
+
+      // first postion 
+      pos1 = 0;
+      pos2 = containerWidth - img2.offsetWidth;
+      pos3 = 0;
+
+      // new postion 
+      img1.style.left = pos1 + 'px';
+      img2.style.left = pos2 + 'px';
+      img3.style.top = pos3 + 'px';
+
+      // continue 
+      if (wasMoving) {
+        startMoving();
+      }
+    }
+
+    document.getElementById('startBtn').onclick = startMoving;
+    document.getElementById('stopBtn').onclick = stopMoving;
+    document.getElementById('resetBtn').onclick = resetPositions;
+
+
+
+  </script>
+
+</body>
+
+</html>
